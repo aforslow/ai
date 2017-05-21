@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tornado WebSockets</title>
+    <script type="text/javascript" src="{{ static_url("js/script.js") }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ static_url("css/mystyle.css") }}">
+
+
+
+</head>
+<body onload="onLoad();">
+    <div class="topnav" id=myTopnav>
+      <a class="active" href="#home">Home</a>
+      <a href="#news">News</a>
+      <a href="#contact">Contact</a>
+      <a href="#about">About</a>
+    </div>
+    <!-- <strong>Message to Send:</strong>&nbsp;<input type="text" id="msg" maxlength="25" />
+    &nbsp;<input type="button" onclick="sendMsg();" value="Send" />
+
+    <input type="button" onclick="closeMsg();" value="Close" /> -->
+    <div class="mainDiv" id="myMainDiv">
+      <div class="gameDiv" id="myGameDiv">
+        <img onclick="toggleImageStream()" src="../images/mountaincar.jpg" class="stream" id='img'/>
+        <p>Game number: <span id="game">0</span></p>
+        <p>Iteration number: <span id="iteration">0</span></p>
+        <p>Number of wins: <span id="wins">0</span></p>
+        <p>Win rate over last 20 iterations: <span id="win_rate">0</span></p>
+        <p>Action: <span id="action"></span></p>
+        <p>Q vector: [<span id="Q0"></span> <span id="Q1"></span> <span id="Q2"></span>]</p>
+        <p>State: [<span id="S0"></span> <span id="S1"></span>]</p>
+      </div>
+
+      <div class="gameDiv" id="myContentDiv">
+        <p>Hejsan!</p>
+        <p>Detta är min personliga hemsida för att livestreama min Deep Q RNN-algoritm.
+          Förhoppningsvis kommer algoritmen att lära sig köra spelet ovan. Spelet går ut
+          på att ta bilen till flaggan så fort som möjligt från botten av dalen.
+          Hemsidan kommer updateras allt eftersom jag gör framsteg med algoritmen!
+        </p>
+        <!-- <strong>Message to Send:</strong>&nbsp;<input type="text" id="msg" maxlength="25" />
+        &nbsp;<input type="button" onclick="writeSection();" value="Close" /> -->
+      </div>
+    </div>
+    <!-- <img src="..images/rotation.jpg" id="image1"/> -->
+    <!-- <img src="file:///D:/programming/coding_projects/artificial_intelligence/edan70/test_website/comet/ws/src/images/positioner2.jpg"/> -->
+    <!-- <img src="positioner2.jpg"/> -->
+</body>
+</html>

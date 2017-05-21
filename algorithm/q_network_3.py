@@ -34,7 +34,7 @@ class QNetwork():
         return tf.Variable(initial)
 
     def create_structure(self):
-        self._create_init_network_1()
+        self._create_init_network()
 
         self.batch_size = tf.placeholder(dtype=tf.int32, name='batch_size')
         self.sequence_length = tf.placeholder(dtype=tf.int32)
@@ -44,8 +44,8 @@ class QNetwork():
             cell=self.rnn_cell, inputs=self.rnn_in, \
             initial_state=self.state_in, dtype=tf.float32,\
             scope=self.scope+'_dynamic')
-        self.rnn = tf.reshape(self.rnn, shape=[-1, ct.LSTM_NUM_UNITS])
 
+        self.rnn = tf.reshape(self.rnn, shape=[-1, ct.LSTM_NUM_UNITS])
         self.streamA, self.streamV = tf.split(self.rnn, 2, 1)
         self.advantage_weights = self.weight_variable([ct.LSTM_NUM_UNITS//2, self.n_actions])
         self.value_weights = self.weight_variable([ct.LSTM_NUM_UNITS//2, 1])
@@ -65,31 +65,19 @@ class QNetwork():
         # Create Trainer
         self.train_step = tf.train.AdamOptimizer(self.learning_rate).minimize(self.loss)
 
-    def _create_init_network_1(self):
-        with tf.name_scope('init_network'):
-            self.input_state = tf.placeholder(shape=[None, self.input_size], dtype=tf.float32)
-            W1 = self.weight_variable([self.input_size, 3])
-            b1 = self.bias_variable([3])
-            h1 = tf.nn.relu(tf.matmul(self.input_state, W1) + b1)
-
-            W2 = self.weight_variable([3, ct.LSTM_NUM_UNITS])
-            b2 = self.bias_variable([ct.LSTM_NUM_UNITS])
-            self.first_output = tf.nn.softmax(tf.matmul(h1, W2) + b2)
-
     def _create_init_network(self):
-        with tf.name_scope('init_network'):
-            self.input_state = tf.placeholder(shape=[None, self.input_size], dtype=tf.float32)
-            W1 = self.weight_variable([self.input_size, 10])
-            b1 = self.bias_variable([10])
-            h1 = tf.nn.relu(tf.matmul(self.input_state, W1) + b1)
+        self.input_state = tf.placeholder(shape=[None, self.input_size], dtype=tf.float32)
+        W1 = self.weight_variable([self.input_size, 10])
+        b1 = self.bias_variable([10])
+        h1 = tf.nn.relu(tf.matmul(self.input_state, W1) + b1)
 
-            W2 = self.weight_variable([10, 10])
-            b2 = self.bias_variable([10])
-            h2 = tf.nn.relu(tf.matmul(h1, W2) + b2)
+        W2 = self.weight_variable([10, 10])
+        b2 = self.bias_variable([10])
+        h2 = tf.nn.relu(tf.matmul(h1, W2) + b2)
 
-            W3 = self.weight_variable([10, ct.LSTM_NUM_UNITS])
-            b3 = self.bias_variable([ct.LSTM_NUM_UNITS])
-            self.first_output = tf.nn.softmax(tf.matmul(h2, W3) + b3)
+        W3 = self.weight_variable([10, ct.LSTM_NUM_UNITS])
+        b3 = self.bias_variable([ct.LSTM_NUM_UNITS])
+        self.first_output = tf.nn.softmax(tf.matmul(h2, W3) + b3)
 
     def save(self, outfile):
         try:

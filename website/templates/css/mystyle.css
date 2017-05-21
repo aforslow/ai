@@ -1,0 +1,119 @@
+body {
+  margin: 0;
+  background-color: #ff6600;
+}
+
+/* Add a black background color to the top navigation */
+.topnav {
+    background-color: #333;
+    overflow: hidden;
+    padding-left: 100px;
+}
+
+/* Style the links inside the navigation bar */
+.topnav a {
+    float: left;
+    display: block;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+/* Change the color of links on hover */
+.topnav a:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+/* Add a color to the active/current link */
+.topnav a.active {
+    background-color: #e6e6ff;
+    color: #888;
+}
+/*
+.focus {
+
+}*/
+
+.mainDiv {
+  /*position: absolute;*/
+  height: 100%;
+  background-color: #888;
+  margin-left: 100px;
+  margin-right: 100px;
+  padding-left: 70px;
+  padding-right: 70px;
+  padding-top: 30px;
+  padding-bottom: 70px;
+}
+
+.post {
+  position: relative;
+  background-color: #e6e6ff;
+  border-size: 1px;
+  border-style: solid;
+  border-color: white;
+  border-radius: 10px;
+  padding: 25px;
+  margin-bottom: 20px;
+}
+
+.gameDiv {
+  float: left;
+  width: 500px;
+  height: 250px;
+}
+
+.stream {
+  cursor: pointer;
+}
+
+.figures {
+  position: relative;
+  float: left;
+  width: 100px;
+  height: 250px;
+}
+
+.QBox {
+  float: left;
+  width: 20px;
+  margin-left: 5px;
+  background-color: #999;
+  height: 1px;
+}
+
+.QBoxShadow {
+  position: absolute;
+  width: 20px;
+  height: 100px;
+  background-color: #666;
+  bottom: 100px;
+}
+
+.upExpandingBox {
+  position: absolute;
+  background-color: black;
+  width: 20px;
+  bottom: 100px;
+}
+
+.topAligner {
+  height: 100px;
+  width: 100px;
+}
+
+.bottomAligner {
+  position: absolute;
+  height: 20px;
+  width: 95px;
+  bottom: 80px;
+  margin-left: 5px;
+}
+
+.boxes {
+  width: 100px;
+  height: 100px;
+}

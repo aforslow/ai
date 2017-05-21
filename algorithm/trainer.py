@@ -20,10 +20,12 @@ class Trainer(object):
     def _init_options(self, kwargs):
         options = {
                 'train_mode':           'random',
+                'n_games':              2000,
                 'rendering':            False,
                 'printing_statistics':  True,
                 'n_wins':               0,
                 'games_played':         0,
+                'n_iters':              3000,
                 'network_path':         None,
                 'memory_path':          None,
                 'render_mode':          None,
@@ -54,7 +56,6 @@ class Trainer(object):
         print ("nGames played: %d" % self.games_played)
         self.buffer.save(self.memory_path, self.n_wins, self.games_played)
         self.primary_network.save(self.network_path)
-        self.train_writer.close()
         self.sess.close()
         sys.exit(0)
 
@@ -62,13 +63,11 @@ class Trainer(object):
         self.rendering = rendering or self.message_handler.sending_images
         with tf.Session() as self.sess:
             self._init_networks(self.sess)
-            merged = tf.summary.merge_all()
-            self.train_writer = tf.summary.FileWriter('/tmp/tensorflow/deep_q/train', self.sess.graph)
             self.sess.run(tf.global_variables_initializer())
             signal.signal(signal.SIGINT, self._signal_handler)
             win_tracker = []
 
-            for game in range(self.games_played, self.games_played + ct.N_GAMES):
+            for game in range(self.games_played, self.games_played + self.n_games):
                 s_                  = self.env.reset()
                 epsilon             = ct.EPSILON_START
                 a_network           = 0
@@ -77,7 +76,7 @@ class Trainer(object):
                 transitions_buffer  = []
                 prev_rnn_state = (np.zeros([1,ct.LSTM_NUM_UNITS]), np.zeros([1,ct.LSTM_NUM_UNITS]))
 
-                for iteration in range(ct.MAX_ITERATIONS):
+                for iteration in range(self.n_iters):
                     self._display_game()
 
                     rand_action_num = random.random()
@@ -101,7 +100,7 @@ class Trainer(object):
                             })
                         a = action[0]
                         a_network = a
-                    s_, r, d = self.env.step(a, iteration)
+                    s_, r, d = self.env.step(a)
                     transition_to_put = np.reshape(np.array([s, a, r, s_, d]), [1,5])
                     transitions_buffer.append(transition_to_put)
 
@@ -113,7 +112,7 @@ class Trainer(object):
                     if game > 10 and iteration % 4 == 0 and self.buffer.size >= 10:
                         self.update_networks()
                     prev_rnn_state = rnn_state
-                    epsilon -= (ct.EPSILON_START - ct.EPSILON_END) / ct.MAX_ITERATIONS
+                    epsilon -= (ct.EPSILON_START - ct.EPSILON_END) / self.n_iters
                     if d:
                         self.n_wins += 1
                         win_tracker.append((1,game))
@@ -127,9 +126,7 @@ class Trainer(object):
                 self.message_handler.print_statistics(**dict(win_rate=last_wins/20))
                 if game % 10 == 0:
                     self.primary_network.save(self.network_path)
-            self.buffer.save(self.memory_path, self.n_wins, self.games_played)
-            self.env.close()
-            self.train_writer.close()
+            env.close()
 
     def update_networks(self):
         # state_train = (np.zeros([ct.BATCH_SIZE, ct.LSTM_NUM_UNITS]), \

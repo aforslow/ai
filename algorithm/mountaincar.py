@@ -3,7 +3,6 @@ import numpy as np
 from io import BytesIO
 from PIL import Image
 import base64
-import constants as ct
 
 class MountainCar(object):
 
@@ -28,16 +27,18 @@ class MountainCar(object):
         b64_image = base64.b64encode(img_io.getvalue())
         return b64_image
 
-    def step(self, action, iteration):
+    def step(self, action):
         s_, _, _, _ = self.env.step(action)
         s_ = np.reshape(np.array(s_), self.observation_shape)
         d = s_[0,0] >= 0.5
-        r = self._reward(s_, d, iteration)
+        r = self._reward(s_, d)
         return s_, r, d
 
-    def _reward(self, s_, d, iteration):
+    def _reward(self, s_, d):
         if d:
-            return (d + 0.001 * (ct.MAX_ITERATIONS - iteration))
+            return d
+        if s_[0,0] >= 0.4:
+            return 0.1
         else:
             return 0
 
@@ -48,6 +49,3 @@ class MountainCar(object):
 
     def random_act(self):
         return self.env.action_space.sample()
-
-    def close(self):
-        self.env.close()

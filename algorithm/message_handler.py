@@ -37,8 +37,7 @@ class MessageHandler(object):
                 self.image_socket.send('close')
                 self.sending_images = False
             except zmq.error.Again as e:
-                # print(e)
-                pass
+                print(e)
 
     def print_statistics(self, **kwargs): #game, iteration, n_wins, action, primary_Q_out, state):
         for k, v in kwargs.items():
