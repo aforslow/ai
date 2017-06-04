@@ -37,8 +37,8 @@ class Commander(threading.Thread):
 
 if __name__ == "__main__":
 	memory_path = "D:/programming/coding_projects/artificial_intelligence/"\
-	                "edan70/sandbox/data/game_data_small_with_mask_7.p"
-	network_path = "/tmp/deep_q_small_net_with_mask_7.ckpt"
+	                "edan70/sandbox/data/game_data_small_with_mask_9.p"
+	network_path = "/tmp/deep_q_small_net_with_mask_9.ckpt"
 	# global trainer
 
 	# network_path = None

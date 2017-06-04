@@ -54,7 +54,7 @@ class Trainer(object):
     def _signal_handler(self, signal, frame):
         print ("\nQuitting..\n")
         print ("nGames played: %d" % self.games_played)
-        self.buffer.save(self.memory_path, self.n_wins, self.games_played)
+        self.buffer.save(self.memory_path, self.n_wins, self.games_played, self.win_rate)
         self.primary_network.save(self.network_path)
         self.train_writer.close()
         self.sess.close()
@@ -82,7 +82,7 @@ class Trainer(object):
         self.wr_summ = tf.summary.scalar('Winrate_counter', self.winrate_counter)
 
         # self.merged = tf.summary.merge_all()
-        self.train_writer = tf.summary.FileWriter('/tmp/tensorflow/deep_q/train3', self.sess.graph)
+        self.train_writer = tf.summary.FileWriter('/tmp/tensorflow/deep_q/train5', self.sess.graph)
 
     def train(self, rendering=False):
         self.rendering = rendering or self.message_handler.sending_images
@@ -174,8 +174,12 @@ class Trainer(object):
 
                 if game % 10 == 0:
                     self.primary_network.save(self.network_path)
-                if self.total_iterations % 10000 == 0:
-                    self.target_network.restore(self.sess, self.network_path)
+                #
+                # MATTE, KOMMENTERA KOMMANDE 2 RADER
+                # OM DU VILL KÖRA MIN GAMLA APPROACH
+                #
+                if self.total_iterations % 10000 == 0: #Kommentera bort
+                    self.target_network.saver.restore(self.sess, self.network_path) #Kommentera bort
             self.buffer.save(self.memory_path, self.n_wins, self.games_played, self.win_rate)
             self.env.close()
             self.train_writer.close()
@@ -207,6 +211,14 @@ class Trainer(object):
             self.primary_network.sequence_length: ct.SEQUENCE_LENGTH,
             # self.primary_network.state_in: state_train
         })
+
+        #
+        #
+        # MATTE! AVKOMMENTERA FÖLJANDE RADER
+        # OM DU VILL PROVA MIN GAMLA APPROACH
+        #
+        #
+
         # self.sess.run(self.target_network.train_step, feed_dict={
         #     self.target_network.targetQ: targetQ,
         #     self.target_network.input_state: np.vstack(random_memories[:,0]),
