@@ -10,6 +10,7 @@ class Buffer(object):
         self.size           = 0
         self.n_wins         = 0
         self.games_played   = 0
+        self.winrate        = 0
         self.load(memory_path)
 
     def add(self, experience):
@@ -27,10 +28,11 @@ class Buffer(object):
             ans.append(episode[idx-sequence_size:idx])
         return np.reshape(np.array(ans), [batch_size*sequence_size, 5])
 
-    def save(self, outfile, n_wins, game):
+    def save(self, outfile, n_wins, game, winrate):
         try:
             self.n_wins = n_wins
             self.games_played = game
+            self.winrate = winrate
             pickle.dump(self, open(outfile, "wb"))
             print("Saved memory in path:", outfile)
         except:

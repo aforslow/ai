@@ -3,6 +3,7 @@ import numpy as np
 
 import json
 import zmq
+import constants as ct
 
 from zmq.eventloop import ioloop, zmqstream
 ioloop.install()
@@ -14,6 +15,7 @@ class MessageHandler(object):
         self.sending_data_to_web = False
         self.sending_images      = False
         self.win_rate            = 0
+        self.fastest_run         = ct.MAX_ITERATIONS - 1
 
     def set_image_socket(self, port):
         self.image_socket   = self._create_socket(port)
@@ -43,7 +45,7 @@ class MessageHandler(object):
     def print_statistics(self, **kwargs): #game, iteration, n_wins, action, primary_Q_out, state):
         for k, v in kwargs.items():
             setattr(self, k, v)
-        self._print_to_terminal()
+        # self._print_to_terminal()
         self._send_data_to_webserver()
 
     def _print_to_terminal(self):
@@ -60,11 +62,13 @@ class MessageHandler(object):
                             'iteration': self.iteration,
                             'wins': self.wins,
                             'action': self.action,
-                            'win_rate': self.win_rate
+                            'action_type': self.action_type,
+                            'win_rate': self.win_rate,
+                            'fastest_run': self.fastest_run
                             }
             def add_numpy(denominator, array):
                 for i in range(array.size):
-                    val = '%4f' % array.item(i)
+                    val = '%3f' % array.item(i)
                     key = denominator + str(i)
                     data_to_send[key] = val
 

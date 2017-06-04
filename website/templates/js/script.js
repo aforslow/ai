@@ -7,23 +7,35 @@ function onLoad() {
     //image
     ws.onmessage = function(json_string) {
         var parsed_json = JSON.parse(json_string.data);
-        forEach(parsed_json, write_to_field)
+        forEach(parsed_json, write_to_field);
   };
 }
 
 function write_to_field(key, val) {
     if (document.getElementById(key)) {
       if (key == 'img') {
-        document.getElementById(key).src = "data:image/jpg;base64," + val
+        document.getElementById(key).src = "data:image/jpg;base64," + val;
       } else if (key.startsWith('Q')) {
-        document.getElementById(key).innerHTML = val
-        var tmp_val = 20*(1+parseFloat(val));
+        document.getElementById(key).innerHTML = val;
+        var tmp_val = 400*(0.1 + parseFloat(val));
+        if (tmp_val > 100) {
+          tmp_val = 100;
+        } else if (tmp_val < 0) {
+          tmp_val = 0;
+        }
         // var tmp_val2 = 10*tmp_val;
-        document.getElementById(key + "Box").style.height = tmp_val.toString() + 'px'
+        document.getElementById(key + "Box").style.height = tmp_val.toString() + 'px';
         // document.getElementById(key + "Box").innerHTML = val + 'px'
       } else {
-        document.getElementById(key).innerHTML = val
+        document.getElementById(key).innerHTML = val;
       }
+    } else if (key == 'action_type') {
+        if (val == 'rand') {
+          document.getElementById('action').style.color = "red";
+        }
+        else if (val == 'net') {
+          document.getElementById('action').style.color = "green";
+        }
     }
 }
 

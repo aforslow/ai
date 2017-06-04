@@ -26,7 +26,7 @@ class QNetwork():
             pass
 
     def weight_variable(self, shape):
-        initial = tf.truncated_normal(shape, stddev=0.1, dtype=tf.float32)
+        initial = tf.random_normal(shape, stddev=0.1, dtype=tf.float32)
         return tf.Variable(initial)
 
     def bias_variable(self, shape):
@@ -53,6 +53,8 @@ class QNetwork():
         self.value = tf.matmul(self.streamV, self.value_weights)
         self.Q_vector = self.value + tf.subtract(\
             self.advantage, tf.reduce_mean(self.advantage, axis=1, keep_dims=True))
+        # self.rnn_weight = self.weight_variable([ct.LSTM_NUM_UNITS, 3])
+        # self.Q_vector = tf.matmul(self.rnn, self.rnn_weight)
         self.predict = tf.argmax(self.Q_vector, 1)
 
         # Calculate loss
@@ -60,10 +62,20 @@ class QNetwork():
         self.actions = tf.placeholder(shape=[None], dtype=tf.int32, name='actions')
         self.action_onehot = tf.one_hot(self.actions, self.n_actions, dtype=tf.float32)
         self.Q_val = tf.reduce_sum(tf.multiply(self.Q_vector, self.action_onehot), axis=1)
+        # tf.summary.scalar('Q_val', self.Q_val)
+
         self.loss = tf.square(self.targetQ - self.Q_val)
 
+        # Half gradient loss
+        self.removeHalf = tf.zeros([self.batch_size, self.sequence_length//2])
+        self.keepHalf = tf.ones([self.batch_size, self.sequence_length//2])
+        self.filter = tf.concat([self.removeHalf, self.keepHalf],1)
+        self.filter = tf.reshape(self.filter, [-1])
+        self.loss1 = tf.reduce_mean(self.loss * self.filter)
+        # tf.summary.scalar('loss', self.loss1)
+
         # Create Trainer
-        self.train_step = tf.train.AdamOptimizer(self.learning_rate).minimize(self.loss)
+        self.train_step = tf.train.AdamOptimizer(self.learning_rate).minimize(self.loss1)
 
     def _create_init_network_1(self):
         with tf.name_scope('init_network'):

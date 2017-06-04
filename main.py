@@ -37,14 +37,14 @@ class Commander(threading.Thread):
 
 if __name__ == "__main__":
 	memory_path = "D:/programming/coding_projects/artificial_intelligence/"\
-	                "edan70/sandbox/data/game_data_small_net_1.p"
-	network_path = "/tmp/deep_q_small_net_1.ckpt"
+	                "edan70/sandbox/data/game_data_small_with_mask_7.p"
+	network_path = "/tmp/deep_q_small_net_with_mask_7.ckpt"
 	# global trainer
 
 	# network_path = None
 	# memory_path = None
 	env = MountainCar()
-	agent = MountainCar_agent(env)
+	agent = MountainCar_agent(env, mode='random')
 	message_handler = MessageHandler()
 	message_handler.set_data_socket(ct.DATA_PORT)
 	message_handler.set_image_socket(ct.IMAGE_PORT)
